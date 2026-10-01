@@ -34,12 +34,12 @@ export const getResenasByAutorId = async (req, res) => {
 };
 
 export const createResena = async (req, res) => {
-    const { autor_id, resenado_id, comentario } = req.body;
+    const { autor_id, resenado_id, contenido } = req.body;
     try {
         const newResena = await Resena.create({
             autor_id,
             resenado_id,
-            comentario
+            contenido
         });
         res.status(201).json(newResena);
     } catch (error) {
