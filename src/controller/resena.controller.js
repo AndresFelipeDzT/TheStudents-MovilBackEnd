@@ -51,6 +51,7 @@ export const createResena = async (req, res) => {
 export const updateResena = async (req, res) => {
     const { id } = req.params;
     const { contenido, estado } = req.body;
+    const fecha_edicion = new Date();
     try {
         const resena = await Resena.findByPk(id);
         if (!resena) {
