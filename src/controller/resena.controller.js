@@ -56,7 +56,11 @@ export const updateResena = async (req, res) => {
         if (!resena) {
             return res.status(404).json({ message: "Resena not found" });
         }
-        await resena.update({ ...(contenido && { contenido }), ...(estado && { estado }) });
+        if (contenido !== undefined || estado !== undefined) {
+            await resena.update({ ...(contenido && { contenido }), ...(estado && { estado }), fecha_edicion });
+        } else {
+            return res.status(400).json({ message: "No fields to update" });
+        }
         res.json(resena);
     } catch (error) {
         console.error("Error updating resena:", error);
