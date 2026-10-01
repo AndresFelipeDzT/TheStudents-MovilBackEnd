@@ -3,7 +3,7 @@ import { Resena } from "./Resena.js";
 
 export function setupRelations() {
 
-    // Usuarios que ha reseñado este usuario (como autor)
+    // Usuario que reseña muchos usuarios (como autor)
     Usuario.belongsToMany(Usuario, {
         through: Resena,
         as: "resenados",
@@ -11,7 +11,7 @@ export function setupRelations() {
         otherKey: "resenado_id"
     });
 
-    // Usuarios que han reseñado a este usuario (como reseñado)
+    // Usuario que es reseñado por muchos usuarios (como reseñado)
     Usuario.belongsToMany(Usuario, {
         through: Resena,
         as: "autores",
