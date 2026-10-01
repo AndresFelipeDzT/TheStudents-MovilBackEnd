@@ -67,7 +67,7 @@ TheStudents_Backend/
 | `id` | UUID (PK) | Identificador único autogenerado |
 | `autor_id` | INTEGER (FK → Usuario) | Usuario que escribe la reseña |
 | `resenado_id` | INTEGER (FK → Usuario) | Usuario que recibe la reseña |
-| `comentario` | STRING(1000) | Contenido de la reseña |
+| `contenido` | STRING(1000) | Contenido de la reseña |
 | `fecha_creacion` | DATE | Fecha de creación (default: NOW) |
 | `fecha_edicion` | DATE | Fecha de última edición |
 | `estado` | STRING(12) | Estado de la reseña |
@@ -92,7 +92,7 @@ TheStudents_Backend/
 | `GET` | `/resena/resenado/:resenado_id` | Obtiene todas las reseñas recibidas por un usuario |
 | `GET` | `/resena/autor/:autor_id` | Obtiene todas las reseñas escritas por un usuario |
 | `POST` | `/resena` | Crea una nueva reseña |
-| `PUT` | `/resena/:id` | Actualiza el comentario o estado de una reseña |
+| `PUT` | `/resena/:id` | Actualiza el contenido o estado de una reseña |
 | `DELETE` | `/resena/:id` | Elimina una reseña |
 
 #### Body para `POST /resena`
@@ -100,14 +100,14 @@ TheStudents_Backend/
 {
   "autor_id": 1,
   "resenado_id": 2,
-  "comentario": "Excelente compañero de estudio."
+  "contenido": "Excelente compañero de estudio."
 }
 ```
 
 #### Body para `PUT /resena/:id`
 ```json
 {
-  "comentario": "Comentario actualizado.",
+  "contenido": "Comentario actualizado.",
   "estado": "oculto"
 }
 ```
