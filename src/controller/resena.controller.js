@@ -50,13 +50,13 @@ export const createResena = async (req, res) => {
 
 export const updateResena = async (req, res) => {
     const { id } = req.params;
-    const { comentario, estado } = req.body;
+    const { contenido, estado } = req.body;
     try {
         const resena = await Resena.findByPk(id);
         if (!resena) {
             return res.status(404).json({ message: "Resena not found" });
         }
-        await resena.update({ comentario, ...(estado && { estado }) });
+        await resena.update({ ...(contenido && { contenido }), ...(estado && { estado }) });
         res.json(resena);
     } catch (error) {
         console.error("Error updating resena:", error);
