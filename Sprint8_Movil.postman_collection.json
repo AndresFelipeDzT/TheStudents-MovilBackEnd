@@ -103,7 +103,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"contenido\": \"Nuevo Comentario\",\r\n    \"estado\": \"Oculto\"\r\n}",
+              "raw": "{\r\n    \"contenido\": \"Nuevo Comentario\",\r\n    \"estado\": \"oculto\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
