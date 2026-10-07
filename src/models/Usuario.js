@@ -35,6 +35,13 @@ export const Usuario = sequelize.define(
             type: DataTypes.STRING,
             allowNull: true
         },
+        color_perfil: {
+            type: DataTypes.STRING(7),
+            allowNull: false,
+            validate: {
+                is: /^#[0-9A-Fa-f]{6}$/
+            }
+        },
         carrera: {
             type: DataTypes.STRING(120),
             allowNull: false
