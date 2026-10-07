@@ -47,7 +47,7 @@ export const getResenasByAutorId = async (req, res) => {
 };
 
 export const createResena = async (req, res) => {
-    const { autor_id, resenado_id, materia, periodo, contenido } = req.body;
+    const { autor_id, resenado_id, materia, periodo, contenido, rating } = req.body;
     try {
         const [inscripcionAutor, inscripcionResenado] = await Promise.all([
             Inscripcion.findOne({ where: { usuario_id: autor_id, materia, periodo } }),
@@ -69,7 +69,8 @@ export const createResena = async (req, res) => {
         const newResena = await Resena.create({
             inscripcion_autor_id: inscripcionAutor.id,
             inscripcion_resenado_id: inscripcionResenado.id,
-            contenido
+            contenido,
+            ...(rating && { rating })
         });
         res.status(201).json(newResena);
     } catch (error) {
@@ -80,15 +81,20 @@ export const createResena = async (req, res) => {
 
 export const updateResena = async (req, res) => {
     const { id } = req.params;
-    const { contenido, estado } = req.body;
+    const { contenido, estado, rating } = req.body;
     const fecha_edicion = new Date();
     try {
         const resena = await Resena.findByPk(id);
         if (!resena) {
             return res.status(404).json({ message: "Resena not found" });
         }
-        if (contenido !== undefined || estado !== undefined) {
-            await resena.update({ ...(contenido && { contenido }), ...(estado && { estado }), fecha_edicion });
+        if (contenido !== undefined || estado !== undefined || rating !== undefined) {
+            await resena.update({
+                ...(contenido && { contenido }),
+                ...(estado && { estado }),
+                ...(rating && { rating }),
+                fecha_edicion
+            });
         } else {
             return res.status(400).json({ message: "No fields to update" });
         }

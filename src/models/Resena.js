@@ -30,6 +30,20 @@ export const Resena = sequelize.define(
             type: DataTypes.STRING(1000),
             allowNull: false
         },
+        likes: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        disLikes: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        rating: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         fecha_creacion: {
             type: DataTypes.DATE,
             allowNull: false,
