@@ -64,15 +64,15 @@ TheStudents_Backend/
 ### Resena
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `id` | UUID (PK) | Identificador único autogenerado |
-| `autor_id` | INTEGER (FK → Usuario) | Usuario que escribe la reseña |
-| `resenado_id` | INTEGER (FK → Usuario) | Usuario que recibe la reseña |
+| `id` | INTEGER (PK) | Identificador único autogenerado |
+| `inscripcion_autor_id` | INTEGER (FK → Inscripcion) | Inscripción que escribe la reseña |
+| `inscripcion_resenado_id` | INTEGER (FK → Inscripcion) | Inscripción que recibe la reseña |
 | `contenido` | STRING(1000) | Contenido de la reseña |
 | `fecha_creacion` | DATE | Fecha de creación (default: NOW) |
 | `fecha_edicion` | DATE | Fecha de última edición |
 | `estado` | STRING(12) | Estado de la reseña |
 
-> **Restricción única:** No puede existir más de una reseña del mismo `autor_id` hacia el mismo `resenado_id`.
+> **Restricción única:** No puede existir más de una reseña de la misma inscripción hacia la misma inscripción.
 
 ---
 
@@ -89,8 +89,8 @@ TheStudents_Backend/
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/resena/resenado/:resenado_id` | Obtiene todas las reseñas recibidas por un usuario |
-| `GET` | `/resena/autor/:autor_id` | Obtiene todas las reseñas escritas por un usuario |
+| `GET` | `/resena/resenado/:resenado_id` | Obtiene todas las reseñas recibidas por las inscripciones de un usuario |
+| `GET` | `/resena/autor/:autor_id` | Obtiene todas las reseñas escritas por las inscripciones de un usuario |
 | `POST` | `/resena` | Crea una nueva reseña |
 | `PUT` | `/resena/:id` | Actualiza el contenido o estado de una reseña |
 | `DELETE` | `/resena/:id` | Elimina una reseña |
@@ -100,6 +100,8 @@ TheStudents_Backend/
 {
   "autor_id": 1,
   "resenado_id": 2,
+  "materia": "Bases de Datos",
+  "periodo": "2026-1",
   "contenido": "Excelente compañero de estudio."
 }
 ```

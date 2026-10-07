@@ -1,15 +1,23 @@
 import { Resena } from "../models/Resena.js";
+import { Inscripcion } from "../models/Inscripcion.js";
+import { QueryTypes } from "sequelize";
+import { sequelize } from "../database/database.js";
 
 
 export const getResenasByResenadoId = async (req, res) => {
     const { resenado_id } = req.params;
     try {
-        const resenas = await Resena.findAll({
-            where: { resenado_id }
-        });
-        if (!resenas) {
-            return res.status(404).json({ message: "Resenas not found" });
-        }
+        const resenas = await sequelize.query(
+            `SELECT resena.*
+            FROM "Resenas" AS resena
+            INNER JOIN "Inscripcions" AS inscripcion
+                ON resena.inscripcion_resenado_id = inscripcion.id
+            WHERE inscripcion.usuario_id = :resenado_id`,
+            {
+                replacements: { resenado_id },
+                type: QueryTypes.SELECT
+            }
+        );
         res.json(resenas);
     } catch (error) {
         console.error("Error fetching resenas:", error);
@@ -20,12 +28,17 @@ export const getResenasByResenadoId = async (req, res) => {
 export const getResenasByAutorId = async (req, res) => {
     const { autor_id } = req.params;
     try {
-        const resenas = await Resena.findAll({
-            where: { autor_id }
-        });
-        if (!resenas) {
-            return res.status(404).json({ message: "Resenas not found" });
-        }
+        const resenas = await sequelize.query(
+            `SELECT resena.*
+            FROM "Resenas" AS resena
+            INNER JOIN "Inscripcions" AS inscripcion
+                ON resena.inscripcion_autor_id = inscripcion.id
+            WHERE inscripcion.usuario_id = :autor_id`,
+            {
+                replacements: { autor_id },
+                type: QueryTypes.SELECT
+            }
+        );
         res.json(resenas);
     } catch (error) {
         console.error("Error fetching resenas:", error);
@@ -34,11 +47,28 @@ export const getResenasByAutorId = async (req, res) => {
 };
 
 export const createResena = async (req, res) => {
-    const { autor_id, resenado_id, contenido } = req.body;
+    const { autor_id, resenado_id, materia, periodo, contenido } = req.body;
     try {
+        const [inscripcionAutor, inscripcionResenado] = await Promise.all([
+            Inscripcion.findOne({ where: { usuario_id: autor_id, materia, periodo } }),
+            Inscripcion.findOne({ where: { usuario_id: resenado_id, materia, periodo } })
+        ]);
+
+        if (!inscripcionAutor) {
+            return res.status(404).json({
+                message: "No enrollment found for the author with the provided subject and period."
+            });
+        }
+
+        if (!inscripcionResenado) {
+            return res.status(404).json({
+                message: "No enrollment found for the reviewed user with the provided subject and period."
+            });
+        }
+
         const newResena = await Resena.create({
-            autor_id,
-            resenado_id,
+            inscripcion_autor_id: inscripcionAutor.id,
+            inscripcion_resenado_id: inscripcionResenado.id,
             contenido
         });
         res.status(201).json(newResena);

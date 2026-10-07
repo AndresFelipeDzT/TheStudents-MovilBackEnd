@@ -1,10 +1,12 @@
 import app from "./app.js";
 import { sequelize } from "./database/database.js";
 import { loadInitialUsuarios } from "./database/initUsuarios.js";
+import { loadInitialInscripciones } from "./database/initInscripciones.js";
 import { loadInitialResenas } from "./database/initResenas.js";
 import { setupRelations } from "./models/relations.js";
 import "./models/Usuario.js";
 import "./models/Resena.js";
+import "./models/Inscripcion.js";
 
 async function init() {
 
@@ -22,6 +24,8 @@ async function init() {
         setupRelations();
 
         await loadInitialUsuarios();
+
+        await loadInitialInscripciones();
 
         await loadInitialResenas();
 

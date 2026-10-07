@@ -10,19 +10,19 @@ export const Resena = sequelize.define(
             primaryKey: true,
             autoIncrement: true
         },
-        autor_id: {
+        inscripcion_autor_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: "Usuarios",
+                model: "Inscripcions",
                 key: "id"
             }
         },
-        resenado_id: {
+        inscripcion_resenado_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: "Usuarios",
+                model: "Inscripcions",
                 key: "id"
             }
         },
@@ -50,7 +50,7 @@ export const Resena = sequelize.define(
         indexes: [
             {
                 unique: true,
-                fields: ["autor_id", "resenado_id"]
+                fields: ["inscripcion_autor_id", "inscripcion_resenado_id"]
             }
         ]
     }
