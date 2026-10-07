@@ -1,23 +1,60 @@
 import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
-import { QueryTypes } from "sequelize";
-import { sequelize } from "../database/database.js";
 
 
 export const getResenasByResenadoId = async (req, res) => {
     const { resenado_id } = req.params;
     try {
-        const resenas = await sequelize.query(
-            `SELECT resena.*
-            FROM "Resenas" AS resena
-            INNER JOIN "Inscripcions" AS inscripcion
-                ON resena.inscripcion_resenado_id = inscripcion.id
-            WHERE inscripcion.usuario_id = :resenado_id`,
-            {
-                replacements: { resenado_id },
-                type: QueryTypes.SELECT
-            }
-        );
+        const inscripciones = await Inscripcion.findAll({
+            where: { usuario_id: resenado_id },
+            attributes: ["id", "materia", "periodo"],
+            include: [
+                {
+                    association: "usuario",
+                    attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                },
+                {
+                    association: "autores",
+                    attributes: ["id"],
+                    include: [{
+                        association: "usuario",
+                        attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                    }],
+                    through: {
+                        attributes: [
+                            "id",
+                            "contenido",
+                            "likes",
+                            "disLikes",
+                            "rating",
+                            "fecha_creacion",
+                            "fecha_edicion",
+                            "estado"
+                        ]
+                    }
+                }
+            ]
+        });
+        const resenas = inscripciones.flatMap(inscripcion => {
+            const inscripcionResenado = inscripcion.get({ plain: true });
+            return inscripcionResenado.autores.map(inscripcionAutor => {
+                const resena = inscripcionAutor.Resenas;
+                return {
+                    id: resena.id,
+                    contenido: resena.contenido,
+                    likes: resena.likes,
+                    disLikes: resena.disLikes,
+                    rating: resena.rating,
+                    fecha_creacion: resena.fecha_creacion,
+                    fecha_edicion: resena.fecha_edicion,
+                    estado: resena.estado,
+                    autor: inscripcionAutor.usuario,
+                    resenado: inscripcionResenado.usuario,
+                    materia: inscripcionResenado.materia,
+                    periodo: inscripcionResenado.periodo
+                };
+            });
+        });
         res.json(resenas);
     } catch (error) {
         console.error("Error fetching resenas:", error);
@@ -28,17 +65,56 @@ export const getResenasByResenadoId = async (req, res) => {
 export const getResenasByAutorId = async (req, res) => {
     const { autor_id } = req.params;
     try {
-        const resenas = await sequelize.query(
-            `SELECT resena.*
-            FROM "Resenas" AS resena
-            INNER JOIN "Inscripcions" AS inscripcion
-                ON resena.inscripcion_autor_id = inscripcion.id
-            WHERE inscripcion.usuario_id = :autor_id`,
-            {
-                replacements: { autor_id },
-                type: QueryTypes.SELECT
-            }
-        );
+        const inscripciones = await Inscripcion.findAll({
+            where: { usuario_id: autor_id },
+            attributes: ["id", "materia", "periodo"],
+            include: [
+                {
+                    association: "usuario",
+                    attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                },
+                {
+                    association: "resenados",
+                    attributes: ["id"],
+                    include: [{
+                        association: "usuario",
+                        attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                    }],
+                    through: {
+                        attributes: [
+                            "id",
+                            "contenido",
+                            "likes",
+                            "disLikes",
+                            "rating",
+                            "fecha_creacion",
+                            "fecha_edicion",
+                            "estado"
+                        ]
+                    }
+                }
+            ]
+        });
+        const resenas = inscripciones.flatMap(inscripcion => {
+            const inscripcionAutor = inscripcion.get({ plain: true });
+            return inscripcionAutor.resenados.map(inscripcionResenado => {
+                const resena = inscripcionResenado.Resenas;
+                return {
+                    id: resena.id,
+                    contenido: resena.contenido,
+                    likes: resena.likes,
+                    disLikes: resena.disLikes,
+                    rating: resena.rating,
+                    fecha_creacion: resena.fecha_creacion,
+                    fecha_edicion: resena.fecha_edicion,
+                    estado: resena.estado,
+                    autor: inscripcionAutor.usuario,
+                    resenado: inscripcionResenado.usuario,
+                    materia: inscripcionAutor.materia,
+                    periodo: inscripcionAutor.periodo
+                };
+            });
+        });
         res.json(resenas);
     } catch (error) {
         console.error("Error fetching resenas:", error);
