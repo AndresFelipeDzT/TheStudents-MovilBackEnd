@@ -10,15 +10,13 @@ export const getResenasByResenadoId = async (req, res) => {
             attributes: ["id", "materia", "periodo"],
             include: [
                 {
-                    association: "usuario",
-                    attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                    association: "usuario"
                 },
                 {
                     association: "autores",
                     attributes: ["id"],
                     include: [{
-                        association: "usuario",
-                        attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                        association: "usuario"
                     }],
                     through: {
                         attributes: [
@@ -70,15 +68,13 @@ export const getResenasByAutorId = async (req, res) => {
             attributes: ["id", "materia", "periodo"],
             include: [
                 {
-                    association: "usuario",
-                    attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                    association: "usuario"
                 },
                 {
                     association: "resenados",
                     attributes: ["id"],
                     include: [{
-                        association: "usuario",
-                        attributes: ["id", "nombre_usuario", "nombre", "foto_url", "color_perfil"]
+                        association: "usuario"
                     }],
                     through: {
                         attributes: [
