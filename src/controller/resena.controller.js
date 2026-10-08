@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
 
@@ -111,6 +112,71 @@ export const getResenasByAutorId = async (req, res) => {
                 };
             });
         });
+        res.json(resenas);
+    } catch (error) {
+        console.error("Error fetching resenas:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getResenasExcludingUsuarioId = async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const inscripciones = await Inscripcion.findAll({
+            where: {
+                usuario_id: { [Op.ne]: usuario_id }
+            },
+            attributes: ["id", "materia", "periodo"],
+            include: [
+                {
+                    association: "usuario"
+                },
+                {
+                    association: "resenados",
+                    attributes: ["id"],
+                    where: {
+                        usuario_id: { [Op.ne]: usuario_id }
+                    },
+                    include: [{
+                        association: "usuario"
+                    }],
+                    through: {
+                        attributes: [
+                            "id",
+                            "contenido",
+                            "likes",
+                            "disLikes",
+                            "rating",
+                            "fecha_creacion",
+                            "fecha_edicion",
+                            "estado"
+                        ]
+                    }
+                }
+            ]
+        });
+
+        const resenas = inscripciones.flatMap(inscripcion => {
+            const inscripcionAutor = inscripcion.get({ plain: true });
+            return inscripcionAutor.resenados.map(inscripcionResenado => {
+                const resena = inscripcionResenado.Resenas;
+                return {
+                    id: resena.id,
+                    contenido: resena.contenido,
+                    likes: resena.likes,
+                    disLikes: resena.disLikes,
+                    rating: resena.rating,
+                    fecha_creacion: resena.fecha_creacion,
+                    fecha_edicion: resena.fecha_edicion,
+                    estado: resena.estado,
+                    autor: inscripcionAutor.usuario,
+                    resenado: inscripcionResenado.usuario,
+                    materia: inscripcionAutor.materia,
+                    periodo: inscripcionAutor.periodo
+                };
+            });
+        });
+
         res.json(resenas);
     } catch (error) {
         console.error("Error fetching resenas:", error);

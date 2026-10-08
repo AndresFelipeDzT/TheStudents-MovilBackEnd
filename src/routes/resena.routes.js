@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     getResenasByResenadoId,
     getResenasByAutorId,
+    getResenasExcludingUsuarioId,
     createResena,
     updateResena,
     deleteResena
@@ -13,6 +14,8 @@ const router = Router();
 router.get("/resenado/:resenado_id", getResenasByResenadoId);
 //localhost:3000/resena/autor/:autor_id
 router.get("/autor/:autor_id", getResenasByAutorId);
+//localhost:3000/resena/excluir/:usuario_id
+router.get("/excluir/:usuario_id", getResenasExcludingUsuarioId);
 //localhost:3000/resena
 router.post("/", createResena);
 //localhost:3000/resena/:id
