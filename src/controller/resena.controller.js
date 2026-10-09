@@ -3,8 +3,35 @@ import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
 import { Usuario } from "../models/Usuario.js";
 
+export const getResenaById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const resena = await Resena.findByPk(id, {
+            include: [
+                {
+                    model: Usuario,
+                    as: "autor"
+                },
+                {
+                    model: Usuario,
+                    as: "resenado"
+                }
+            ]
+        });
+
+        if (!resena) {
+            return res.status(404).json({ message: "Resena not found" });
+        }
+
+        res.json(resena);
+    } catch (error) {
+        console.error("Error fetching resena by id:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 export const getResenasByResenadoId = async (req, res) => {
+
     const { resenado_id } = req.params;
     try {
         const resenas = await Resena.findAll({
