@@ -52,6 +52,48 @@ export const getResenasByAutorId = async (req, res) => {
     }
 };
 
+export const getPerfilUsuario = async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const usuario = await Usuario.findByPk(usuario_id);
+        if (!usuario) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        const [resenas_recibidas, resenas_creadas] = await Promise.all([
+            Resena.findAll({
+                where: { resenado_id: usuario_id },
+                include: [
+                    {
+                        model: Usuario,
+                        as: "autor"
+                    }
+                ],
+                attributes: { exclude: ["autor_id", "resenado_id"] }
+            }),
+            Resena.findAll({
+                where: { autor_id: usuario_id },
+                include: [
+                    {
+                        model: Usuario,
+                        as: "resenado"
+                    }
+                ],
+                attributes: { exclude: ["autor_id", "resenado_id"] }
+            })
+        ]);
+
+        res.json({
+            usuario,
+            resenas_recibidas,
+            resenas_creadas
+        });
+    } catch (error) {
+        console.error("Error fetching perfil usuario:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 export const getResenasExcludingUsuarioId = async (req, res) => {
     const { usuario_id } = req.params;
     try {

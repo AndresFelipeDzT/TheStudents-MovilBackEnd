@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     getResenasByResenadoId,
     getResenasByAutorId,
+    getPerfilUsuario,
     getResenasExcludingUsuarioId,
     createResena,
     updateResena,
@@ -10,10 +11,10 @@ import {
 
 const router = Router();
 
+//localhost:3000/resena/perfil/:usuario_id
+router.get("/perfil/:usuario_id", getPerfilUsuario);
 //localhost:3000/resena/resenado/:resenado_id
 router.get("/resenado/:resenado_id", getResenasByResenadoId);
-//localhost:3000/resena/autor/:autor_id
-router.get("/autor/:autor_id", getResenasByAutorId);
 //localhost:3000/resena/excluir/:usuario_id
 router.get("/excluir/:usuario_id", getResenasExcludingUsuarioId);
 //localhost:3000/resena
