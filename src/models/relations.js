@@ -4,6 +4,7 @@ import { Inscripcion } from "./Inscripcion.js";
 
 export function setupRelations() {
 
+    // Inscripcion <-> Usuario
     Usuario.hasMany(Inscripcion, {
         as: "inscripciones",
         foreignKey: "usuario_id",
@@ -16,20 +17,29 @@ export function setupRelations() {
         foreignKey: "usuario_id"
     });
 
-    // Inscrito reseña muchas inscripciones (como autor)
-    Inscripcion.belongsToMany(Inscripcion, {
-        through: Resena,
-        as: "resenados",
-        foreignKey: "inscripcion_autor_id",
-        otherKey: "inscripcion_resenado_id"
+    // Resena <-> Usuario
+    Resena.belongsTo(Usuario, {
+        as: "autor",
+        foreignKey: "autor_id"
     });
 
-    // Inscripcion que es reseñado por muchos inscritos (como reseñado)
-    Inscripcion.belongsToMany(Inscripcion, {
-        through: Resena,
-        as: "autores",
-        foreignKey: "inscripcion_resenado_id",
-        otherKey: "inscripcion_autor_id"
+    Resena.belongsTo(Usuario, {
+        as: "resenado",
+        foreignKey: "resenado_id"
+    });
+
+    Usuario.hasMany(Resena, {
+        as: "resenas_escritas",
+        foreignKey: "autor_id",
+        onDelete: "cascade",
+        hooks: true
+    });
+
+    Usuario.hasMany(Resena, {
+        as: "resenas_recibidas",
+        foreignKey: "resenado_id",
+        onDelete: "cascade",
+        hooks: true
     });
 
 }

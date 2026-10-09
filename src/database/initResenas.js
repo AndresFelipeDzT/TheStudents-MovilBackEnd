@@ -2,52 +2,45 @@ import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
 
 const initialResenas = [
-    { inscripcion_autor_id: 1, inscripcion_resenado_id: 2, contenido: "Excelente compañero de equipo, muy responsable y comprometido con el proyecto de software.", likes: 12, disLikes: 1, rating: "5" },
-    { inscripcion_autor_id: 2, inscripcion_resenado_id: 1, contenido: "Muy buen trabajo colaborando en las actividades y proyectos de la materia.", likes: 8, disLikes: 0, rating: "4.5" },
-    { inscripcion_autor_id: 1, inscripcion_resenado_id: 3, contenido: "Aporta ideas claras y ayuda al equipo a resolver problemas de bases de datos.", likes: 5 },
-    { inscripcion_autor_id: 3, inscripcion_resenado_id: 1, contenido: "Siempre dispuesto a compartir sus conocimientos y apoyar a sus compañeros." },
-    { inscripcion_autor_id: 2, inscripcion_resenado_id: 3, contenido: "Se destaca por su compromiso y sus aportes durante las clases." },
-    { inscripcion_autor_id: 3, inscripcion_resenado_id: 2, contenido: "Trabaja muy bien en equipo y cumple con sus responsabilidades." },
-    { inscripcion_autor_id: 4, inscripcion_resenado_id: 5, contenido: "Explica conceptos complejos con claridad y participa activamente en clase.", likes: 15, disLikes: 2, rating: "5" },
-    { inscripcion_autor_id: 5, inscripcion_resenado_id: 4, contenido: "Es responsable y aporta soluciones creativas a los trabajos de la materia." },
-    { inscripcion_autor_id: 7, inscripcion_resenado_id: 8, contenido: "Sus aportes en el diseño de interfaces mejoran el trabajo del grupo.", likes: 3, disLikes: 1, rating: "4" },
-    { inscripcion_autor_id: 8, inscripcion_resenado_id: 7, contenido: "Es organizada y siempre está dispuesta a colaborar con sus compañeros." },
-    { inscripcion_autor_id: 11, inscripcion_resenado_id: 12, contenido: "Escribe código claro y comparte buenas ideas para los proyectos web.", likes: 9 },
-    { inscripcion_autor_id: 12, inscripcion_resenado_id: 11, contenido: "Muy buen dominio de las herramientas y conceptos de programación web." },
-    { inscripcion_autor_id: 13, inscripcion_resenado_id: 14, contenido: "Se destaca resolviendo problemas de redes y apoyando a sus compañeros." },
-    { inscripcion_autor_id: 14, inscripcion_resenado_id: 13, contenido: "Tiene gran disposición para trabajar en equipo y compartir sus conocimientos." },
-    { inscripcion_autor_id: 16, inscripcion_resenado_id: 17, contenido: "Es muy colaborador y explica con claridad los ejercicios de cálculo.", rating: "4.5" },
-    { inscripcion_autor_id: 18, inscripcion_resenado_id: 19, contenido: "Aporta buenas ideas y trabaja responsablemente en los ejercicios de sistemas." },
-    { inscripcion_autor_id: 19, inscripcion_resenado_id: 18, contenido: "Es un gran compañero, siempre dispuesto a colaborar en clase." }
+    { autor_id: 1, resenado_id: 2, materia: "Bases de Datos", periodo: "2026-1", contenido: "Excelente compañero de equipo, muy responsable y comprometido con el proyecto de software.", likes: 12, disLikes: 1, rating: "5" },
+    { autor_id: 2, resenado_id: 1, materia: "Bases de Datos", periodo: "2026-1", contenido: "Muy buen trabajo colaborando en las actividades y proyectos de la materia.", likes: 8, disLikes: 0, rating: "4.5" },
+    { autor_id: 1, resenado_id: 3, materia: "Bases de Datos", periodo: "2026-1", contenido: "Aporta ideas claras y ayuda al equipo a resolver problemas de bases de datos.", likes: 5 },
+    { autor_id: 3, resenado_id: 1, materia: "Bases de Datos", periodo: "2026-1", contenido: "Siempre dispuesto a compartir sus conocimientos y apoyar a sus compañeros." },
+    { autor_id: 2, resenado_id: 3, materia: "Bases de Datos", periodo: "2026-1", contenido: "Se destaca por su compromiso y sus aportes durante las clases." },
+    { autor_id: 3, resenado_id: 2, materia: "Bases de Datos", periodo: "2026-1", contenido: "Trabaja muy bien en equipo y cumple con sus responsabilidades." },
+    { autor_id: 4, resenado_id: 5, materia: "Inteligencia Artificial", periodo: "2026-1", contenido: "Explica conceptos complejos con claridad y participa activamente en clase.", likes: 15, disLikes: 2, rating: "5" },
+    { autor_id: 5, resenado_id: 4, materia: "Inteligencia Artificial", periodo: "2026-1", contenido: "Es responsable y aporta soluciones creativas a los trabajos de la materia." },
+    { autor_id: 7, resenado_id: 8, materia: "Diseño de Interfaces", periodo: "2026-1", contenido: "Sus aportes en el diseño de interfaces mejoran el trabajo del grupo.", likes: 3, disLikes: 1, rating: "4" },
+    { autor_id: 8, resenado_id: 7, materia: "Diseño de Interfaces", periodo: "2026-1", contenido: "Es organizada y siempre está dispuesta a colaborar con sus compañeros." },
+    { autor_id: 1, resenado_id: 2, materia: "Programación Web", periodo: "2025-2", contenido: "Escribe código claro y comparte buenas ideas para los proyectos web.", likes: 9 },
+    { autor_id: 2, resenado_id: 1, materia: "Programación Web", periodo: "2025-2", contenido: "Muy buen dominio de las herramientas y conceptos de programación web." },
+    { autor_id: 3, resenado_id: 4, materia: "Redes de Computadores", periodo: "2025-2", contenido: "Se destaca resolviendo problemas de redes y apoyando a sus compañeros." },
+    { autor_id: 4, resenado_id: 3, materia: "Redes de Computadores", periodo: "2025-2", contenido: "Tiene gran disposición para trabajar en equipo y compartir sus conocimientos." },
+    { autor_id: 6, resenado_id: 7, materia: "Cálculo Diferencial", periodo: "2025-1", contenido: "Es muy colaborador y explica con claridad los ejercicios de cálculo.", rating: "4.5" },
+    { autor_id: 8, resenado_id: 9, materia: "Sistemas Operativos", periodo: "2025-1", contenido: "Aporta buenas ideas y trabaja responsablemente en los ejercicios de sistemas." },
+    { autor_id: 9, resenado_id: 8, materia: "Sistemas Operativos", periodo: "2025-1", contenido: "Es un gran compañero, siempre dispuesto a colaborar en clase." }
 ];
 
 export async function loadInitialResenas() {
     try {
         const count = await Resena.count();
         if (count === 0) {
-            const inscripcionIds = [
-                ...new Set(initialResenas.flatMap(({ inscripcion_autor_id, inscripcion_resenado_id }) => [
-                    inscripcion_autor_id,
-                    inscripcion_resenado_id
-                ]))
-            ];
             const inscripciones = await Inscripcion.findAll({
-                attributes: ["id", "materia", "periodo"],
-                where: { id: inscripcionIds }
+                attributes: ["usuario_id", "materia", "periodo"]
             });
-            const inscripcionesById = new Map(inscripciones.map(inscripcion => [inscripcion.id, inscripcion]));
-            if (inscripcionesById.size !== inscripcionIds.length) {
-                console.log("Inscripciones required for initial resenas are missing. Skipping initial load.");
-                return;
-            }
 
-            const resenasMismaMateriaYPeriodo = initialResenas.every(({ inscripcion_autor_id, inscripcion_resenado_id }) => {
-                const autor = inscripcionesById.get(inscripcion_autor_id);
-                const resenado = inscripcionesById.get(inscripcion_resenado_id);
-                return autor.materia === resenado.materia && autor.periodo === resenado.periodo;
+            const inscripcionesSet = new Set(
+                inscripciones.map(inscripcion => `${inscripcion.usuario_id}|${inscripcion.materia}|${inscripcion.periodo}`)
+            );
+
+            const resenasMismaMateriaYPeriodo = initialResenas.every(({ autor_id, resenado_id, materia, periodo }) => {
+                const autorInscrito = inscripcionesSet.has(`${autor_id}|${materia}|${periodo}`);
+                const resenadoInscrito = inscripcionesSet.has(`${resenado_id}|${materia}|${periodo}`);
+                return autorInscrito && resenadoInscrito;
             });
+
             if (!resenasMismaMateriaYPeriodo) {
-                console.error("Initial resenas must match the same subject and period. Skipping initial load.");
+                console.error("Initial resenas must match the same subject and period for both enrolled users. Skipping initial load.");
                 return;
             }
 

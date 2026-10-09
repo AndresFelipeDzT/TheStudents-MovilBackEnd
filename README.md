@@ -65,14 +65,19 @@ TheStudents_Backend/
 | Campo | Tipo | Descripción |
 |---|---|---|
 | `id` | INTEGER (PK) | Identificador único autogenerado |
-| `inscripcion_autor_id` | INTEGER (FK → Inscripcion) | Inscripción que escribe la reseña |
-| `inscripcion_resenado_id` | INTEGER (FK → Inscripcion) | Inscripción que recibe la reseña |
+| `autor_id` | INTEGER (FK → Usuario) | Usuario que escribe la reseña |
+| `resenado_id` | INTEGER (FK → Usuario) | Usuario que recibe la reseña |
+| `materia` | STRING | Materia en la que compartieron inscripción |
+| `periodo` | STRING | Período académico de la materia compartida |
 | `contenido` | STRING(1000) | Contenido de la reseña |
+| `likes` | INTEGER | Cantidad de me gusta (default: 0) |
+| `disLikes` | INTEGER | Cantidad de no me gusta (default: 0) |
+| `rating` | STRING | Calificación asignada |
 | `fecha_creacion` | DATE | Fecha de creación (default: NOW) |
 | `fecha_edicion` | DATE | Fecha de última edición |
 | `estado` | STRING(12) | Estado de la reseña |
 
-> **Restricción única:** No puede existir más de una reseña de la misma inscripción hacia la misma inscripción.
+> **Restricción única:** No puede existir más de una reseña del mismo autor hacia el mismo usuario para la misma materia y período.
 
 ---
 

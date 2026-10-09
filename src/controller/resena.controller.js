@@ -1,58 +1,25 @@
 import { Op } from "sequelize";
 import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
+import { Usuario } from "../models/Usuario.js";
 
 
 export const getResenasByResenadoId = async (req, res) => {
     const { resenado_id } = req.params;
     try {
-        const inscripciones = await Inscripcion.findAll({
-            where: { usuario_id: resenado_id },
-            attributes: ["id", "materia", "periodo"],
+        const resenas = await Resena.findAll({
+            where: { resenado_id },
             include: [
                 {
-                    association: "usuario"
+                    model: Usuario,
+                    as: "autor"
                 },
                 {
-                    association: "autores",
-                    attributes: ["id"],
-                    include: [{
-                        association: "usuario"
-                    }],
-                    through: {
-                        attributes: [
-                            "id",
-                            "contenido",
-                            "likes",
-                            "disLikes",
-                            "rating",
-                            "fecha_creacion",
-                            "fecha_edicion",
-                            "estado"
-                        ]
-                    }
+                    model: Usuario,
+                    as: "resenado"
                 }
-            ]
-        });
-        const resenas = inscripciones.flatMap(inscripcion => {
-            const inscripcionResenado = inscripcion.get({ plain: true });
-            return inscripcionResenado.autores.map(inscripcionAutor => {
-                const resena = inscripcionAutor.Resenas;
-                return {
-                    id: resena.id,
-                    contenido: resena.contenido,
-                    likes: resena.likes,
-                    disLikes: resena.disLikes,
-                    rating: resena.rating,
-                    fecha_creacion: resena.fecha_creacion,
-                    fecha_edicion: resena.fecha_edicion,
-                    estado: resena.estado,
-                    autor: inscripcionAutor.usuario,
-                    resenado: inscripcionResenado.usuario,
-                    materia: inscripcionResenado.materia,
-                    periodo: inscripcionResenado.periodo
-                };
-            });
+            ],
+            attributes: { exclude: ["autor_id", "resenado_id"] }
         });
         res.json(resenas);
     } catch (error) {
@@ -64,53 +31,19 @@ export const getResenasByResenadoId = async (req, res) => {
 export const getResenasByAutorId = async (req, res) => {
     const { autor_id } = req.params;
     try {
-        const inscripciones = await Inscripcion.findAll({
-            where: { usuario_id: autor_id },
-            attributes: ["id", "materia", "periodo"],
+        const resenas = await Resena.findAll({
+            where: { autor_id },
             include: [
                 {
-                    association: "usuario"
+                    model: Usuario,
+                    as: "autor"
                 },
                 {
-                    association: "resenados",
-                    attributes: ["id"],
-                    include: [{
-                        association: "usuario"
-                    }],
-                    through: {
-                        attributes: [
-                            "id",
-                            "contenido",
-                            "likes",
-                            "disLikes",
-                            "rating",
-                            "fecha_creacion",
-                            "fecha_edicion",
-                            "estado"
-                        ]
-                    }
+                    model: Usuario,
+                    as: "resenado"
                 }
-            ]
-        });
-        const resenas = inscripciones.flatMap(inscripcion => {
-            const inscripcionAutor = inscripcion.get({ plain: true });
-            return inscripcionAutor.resenados.map(inscripcionResenado => {
-                const resena = inscripcionResenado.Resenas;
-                return {
-                    id: resena.id,
-                    contenido: resena.contenido,
-                    likes: resena.likes,
-                    disLikes: resena.disLikes,
-                    rating: resena.rating,
-                    fecha_creacion: resena.fecha_creacion,
-                    fecha_edicion: resena.fecha_edicion,
-                    estado: resena.estado,
-                    autor: inscripcionAutor.usuario,
-                    resenado: inscripcionResenado.usuario,
-                    materia: inscripcionAutor.materia,
-                    periodo: inscripcionAutor.periodo
-                };
-            });
+            ],
+            attributes: { exclude: ["autor_id", "resenado_id"] }
         });
         res.json(resenas);
     } catch (error) {
@@ -122,59 +55,22 @@ export const getResenasByAutorId = async (req, res) => {
 export const getResenasExcludingUsuarioId = async (req, res) => {
     const { usuario_id } = req.params;
     try {
-        const inscripciones = await Inscripcion.findAll({
+        const resenas = await Resena.findAll({
             where: {
-                usuario_id: { [Op.ne]: usuario_id }
+                autor_id: { [Op.ne]: usuario_id },
+                resenado_id: { [Op.ne]: usuario_id }
             },
-            attributes: ["id", "materia", "periodo"],
             include: [
                 {
-                    association: "usuario"
+                    model: Usuario,
+                    as: "autor"
                 },
                 {
-                    association: "resenados",
-                    attributes: ["id"],
-                    where: {
-                        usuario_id: { [Op.ne]: usuario_id }
-                    },
-                    include: [{
-                        association: "usuario"
-                    }],
-                    through: {
-                        attributes: [
-                            "id",
-                            "contenido",
-                            "likes",
-                            "disLikes",
-                            "rating",
-                            "fecha_creacion",
-                            "fecha_edicion",
-                            "estado"
-                        ]
-                    }
+                    model: Usuario,
+                    as: "resenado"
                 }
-            ]
-        });
-
-        const resenas = inscripciones.flatMap(inscripcion => {
-            const inscripcionAutor = inscripcion.get({ plain: true });
-            return inscripcionAutor.resenados.map(inscripcionResenado => {
-                const resena = inscripcionResenado.Resenas;
-                return {
-                    id: resena.id,
-                    contenido: resena.contenido,
-                    likes: resena.likes,
-                    disLikes: resena.disLikes,
-                    rating: resena.rating,
-                    fecha_creacion: resena.fecha_creacion,
-                    fecha_edicion: resena.fecha_edicion,
-                    estado: resena.estado,
-                    autor: inscripcionAutor.usuario,
-                    resenado: inscripcionResenado.usuario,
-                    materia: inscripcionAutor.materia,
-                    periodo: inscripcionAutor.periodo
-                };
-            });
+            ],
+            attributes: { exclude: ["autor_id", "resenado_id"] }
         });
 
         res.json(resenas);
@@ -205,8 +101,10 @@ export const createResena = async (req, res) => {
         }
 
         const newResena = await Resena.create({
-            inscripcion_autor_id: inscripcionAutor.id,
-            inscripcion_resenado_id: inscripcionResenado.id,
+            autor_id,
+            resenado_id,
+            materia,
+            periodo,
             contenido,
             ...(rating && { rating })
         });
@@ -215,7 +113,7 @@ export const createResena = async (req, res) => {
         console.error("Error creating resena:", error);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 export const updateResena = async (req, res) => {
     const { id } = req.params;
