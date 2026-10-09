@@ -2,9 +2,7 @@ import { Resena } from "../models/Resena.js";
 import { Inscripcion } from "../models/Inscripcion.js";
 
 const initialResenas = [
-    { autor_id: 1, resenado_id: 2, materia: "Bases de Datos", periodo: "2026-1", contenido: "Excelente compañero de equipo, muy responsable y comprometido con el proyecto de software.", likes: 12, disLikes: 1, rating: "5" },
     { autor_id: 2, resenado_id: 1, materia: "Bases de Datos", periodo: "2026-1", contenido: "Muy buen trabajo colaborando en las actividades y proyectos de la materia.", likes: 8, disLikes: 0, rating: "4.5" },
-    { autor_id: 1, resenado_id: 3, materia: "Bases de Datos", periodo: "2026-1", contenido: "Aporta ideas claras y ayuda al equipo a resolver problemas de bases de datos.", likes: 5 },
     { autor_id: 3, resenado_id: 1, materia: "Bases de Datos", periodo: "2026-1", contenido: "Siempre dispuesto a compartir sus conocimientos y apoyar a sus compañeros." },
     { autor_id: 2, resenado_id: 3, materia: "Bases de Datos", periodo: "2026-1", contenido: "Se destaca por su compromiso y sus aportes durante las clases." },
     { autor_id: 3, resenado_id: 2, materia: "Bases de Datos", periodo: "2026-1", contenido: "Trabaja muy bien en equipo y cumple con sus responsabilidades." },

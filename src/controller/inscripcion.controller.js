@@ -2,108 +2,7 @@ import { Op } from "sequelize";
 import { Inscripcion } from "../models/Inscripcion.js";
 import { Usuario } from "../models/Usuario.js";
 
-export const getCompanerosByUsuarioId = async (req, res) => {
-    const usuarioId = Number(req.params.usuario_id);
 
-    if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
-        return res.status(400).json({ message: "usuario_id must be a positive integer" });
-    }
-
-    try {
-        const usuario = await Usuario.findByPk(usuarioId);
-        if (!usuario) {
-            return res.status(404).json({ message: "Usuario not found" });
-        }
-
-        const inscripciones = await Inscripcion.findAll({
-            where: { usuario_id: usuarioId },
-            attributes: ["materia", "periodo"]
-        });
-
-        const inscripcionesUnicas = [
-            ...new Map(
-                inscripciones.map(({ materia, periodo }) => [
-                    JSON.stringify([materia, periodo]),
-                    { materia, periodo }
-                ])
-            ).values()
-        ];
-
-        if (inscripcionesUnicas.length === 0) {
-            return res.json([]);
-        }
-
-        const inscripcionesCompartidas = await Inscripcion.findAll({
-            where: {
-                usuario_id: { [Op.ne]: usuarioId },
-                [Op.or]: inscripcionesUnicas
-            },
-            attributes: ["id", "usuario_id", "materia", "periodo"],
-            include: [{
-                association: "usuario",
-                attributes: [
-                    "id",
-                    "correo",
-                    "nombre_usuario",
-                    "nombre",
-                    "biografia",
-                    "foto_url",
-                    "color_perfil",
-                    "carrera",
-                    "semestre",
-                    "estado",
-                    "fecha_creacion"
-                ]
-            }],
-            order: [
-                ["usuario_id", "ASC"],
-                ["materia", "ASC"],
-                ["periodo", "ASC"]
-            ]
-        });
-
-        const companerosPorId = new Map();
-        for (const inscripcion of inscripcionesCompartidas) {
-            const {
-                id,
-                usuario: companero,
-                materia,
-                periodo
-            } = inscripcion.get({ plain: true });
-            if (!companero) {
-                throw new Error("Shared inscription has no associated user");
-            }
-
-            if (!companerosPorId.has(companero.id)) {
-                companerosPorId.set(companero.id, {
-                    ...companero,
-                    inscripciones_compartidas: []
-                });
-            }
-
-            const inscripcionesDelCompanero =
-                companerosPorId.get(companero.id).inscripciones_compartidas;
-            const yaIncluida = inscripcionesDelCompanero.some(
-                inscripcionCompartida =>
-                    inscripcionCompartida.materia === materia &&
-                    inscripcionCompartida.periodo === periodo
-            );
-            if (!yaIncluida) {
-                inscripcionesDelCompanero.push({
-                    inscripcion_id: id,
-                    materia,
-                    periodo
-                });
-            }
-        }
-
-        res.json([...companerosPorId.values()]);
-    } catch (error) {
-        console.error("Error fetching inscription classmates:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-
-};
 
 export const getInscripcionById = async (req, res) => {
     const { id } = req.params;
@@ -126,3 +25,43 @@ export const getInscripcionById = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const getCompanerosByUsuarioId = async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        // 1. Obtener las materias y periodos en los que está inscrito el usuario dado
+        const misInscripciones = await Inscripcion.findAll({
+            where: { usuario_id },
+            attributes: ["materia", "periodo"]
+        });
+
+        if (!misInscripciones || misInscripciones.length === 0) {
+            return res.status(404).json({ message: "No se encontraron inscripciones para el usuario indicado" });
+        }
+
+        // 2. Construir condiciones para coincidir en materia Y periodo
+        const condicionesClasePeriodo = misInscripciones.map((ins) => ({
+            materia: ins.materia,
+            periodo: ins.periodo
+        }));
+
+        // 3. Buscar inscripciones de otros usuarios que compartan materia y periodo
+        const inscripcionesCompartidas = await Inscripcion.findAll({
+            where: {
+                usuario_id: { [Op.ne]: usuario_id },
+                [Op.or]: condicionesClasePeriodo
+            },
+            include: [
+                {
+                    association: "usuario"
+                }
+            ]
+        });
+
+        res.json(inscripcionesCompartidas);
+    } catch (error) {
+        console.error("Error fetching compañeros de inscripcion:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
