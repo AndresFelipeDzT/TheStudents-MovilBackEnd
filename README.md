@@ -25,7 +25,8 @@ TheStudents_Backend/
 ├── src/
 │   ├── controller/
 │   │   ├── usuario.controller.js   # Lógica de negocio para usuarios
-│   │   └── resena.controller.js    # Lógica de negocio para reseñas
+│   │   ├── resena.controller.js    # Lógica de negocio para reseñas
+│   │   └── inscripcion.controller.js # Lógica de negocio para inscripciones
 │   ├── database/
 │   │   ├── database.js             # Conexión a PostgreSQL con Sequelize
 │   │   ├── initUsuarios.js         # Datos iniciales de usuarios
@@ -36,7 +37,8 @@ TheStudents_Backend/
 │   │   └── relations.js            # Definición de asociaciones entre modelos
 │   ├── routes/
 │   │   ├── usuario.routes.js       # Rutas del recurso /usuario
-│   │   └── resena.routes.js        # Rutas del recurso /resena
+│   │   ├── resena.routes.js        # Rutas del recurso /resena
+│   │   └── inscripcion.routes.js   # Rutas del recurso /inscripcion
 │   ├── app.js                      # Configuración de Express
 │   └── index.js                    # Punto de entrada de la aplicación
 ├── package.json
@@ -99,6 +101,29 @@ TheStudents_Backend/
 | `POST` | `/resena` | Crea una nueva reseña |
 | `PUT` | `/resena/:id` | Actualiza el contenido o estado de una reseña |
 | `DELETE` | `/resena/:id` | Elimina una reseña |
+
+### `/inscripcion`
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/inscripcion/companeros/:usuario_id` | Obtiene los usuarios que comparten materias y periodos con el usuario, incluyendo las inscripciones compartidas |
+
+#### Respuesta de `GET /inscripcion/companeros/:usuario_id`
+Cada compañero aparece una sola vez y contiene una lista `inscripciones_compartidas`:
+```json
+[
+  {
+    "id": 2,
+    "nombre_usuario": "usuario2",
+    "inscripciones_compartidas": [
+      {
+        "materia": "Bases de Datos",
+        "periodo": "2026-1"
+      }
+    ]
+  }
+]
+```
 
 #### Body para `POST /resena`
 ```json
