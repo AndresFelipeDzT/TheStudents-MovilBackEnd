@@ -38,7 +38,7 @@ export const getCompanerosByUsuarioId = async (req, res) => {
                 usuario_id: { [Op.ne]: usuarioId },
                 [Op.or]: inscripcionesUnicas
             },
-            attributes: ["usuario_id", "materia", "periodo"],
+            attributes: ["id", "usuario_id", "materia", "periodo"],
             include: [{
                 association: "usuario",
                 attributes: [
@@ -64,7 +64,12 @@ export const getCompanerosByUsuarioId = async (req, res) => {
 
         const companerosPorId = new Map();
         for (const inscripcion of inscripcionesCompartidas) {
-            const { usuario: companero, materia, periodo } = inscripcion.get({ plain: true });
+            const {
+                id,
+                usuario: companero,
+                materia,
+                periodo
+            } = inscripcion.get({ plain: true });
             if (!companero) {
                 throw new Error("Shared inscription has no associated user");
             }
@@ -84,7 +89,11 @@ export const getCompanerosByUsuarioId = async (req, res) => {
                     inscripcionCompartida.periodo === periodo
             );
             if (!yaIncluida) {
-                inscripcionesDelCompanero.push({ materia, periodo });
+                inscripcionesDelCompanero.push({
+                    inscripcion_id: id,
+                    materia,
+                    periodo
+                });
             }
         }
 
@@ -93,4 +102,5 @@ export const getCompanerosByUsuarioId = async (req, res) => {
         console.error("Error fetching inscription classmates:", error);
         res.status(500).json({ message: "Internal server error" });
     }
+
 };
