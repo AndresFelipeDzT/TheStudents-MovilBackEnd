@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
-    getCompanerosByUsuarioId,
-    getInscripcionesCompartidas
+    getCompanerosByUsuarioId
 } from "../controller/inscripcion.controller.js";
 
 const router = Router();
