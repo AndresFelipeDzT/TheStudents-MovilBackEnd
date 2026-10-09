@@ -104,3 +104,25 @@ export const getCompanerosByUsuarioId = async (req, res) => {
     }
 
 };
+
+export const getInscripcionById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const inscripcion = await Inscripcion.findByPk(id, {
+            include: [
+                {
+                    association: "usuario"
+                }
+            ]
+        });
+
+        if (!inscripcion) {
+            return res.status(404).json({ message: "Inscripcion not found" });
+        }
+
+        res.json(inscripcion);
+    } catch (error) {
+        console.error("Error fetching inscripcion by id:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
