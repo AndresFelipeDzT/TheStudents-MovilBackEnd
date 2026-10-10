@@ -19,9 +19,9 @@ async function init() {
                 console.error("Unable to connect to the database:", error);
             });
 
-        await sequelize.sync({ force: true });
-
         setupRelations();
+
+        await sequelize.sync({ force: true });
 
         await loadInitialUsuarios();
 

@@ -31,39 +31,38 @@ export const getUsuarioById = async (req, res) => {
 export const getPerfilUsuario = async (req, res) => {
     const { id } = req.params;
     try {
-        const usuario = await Usuario.findByPk(id);
-        if (!usuario) {
+        const usuarioBD = await Usuario.findByPk(id, {
+            include: [
+                {
+                    model: Resena,
+                    as: "resenas_recibidas",
+                    include: [{ model: Usuario, as: "autor" }]
+                },
+                {
+                    model: Resena,
+                    as: "resenas_escritas",
+                    include: [{ model: Usuario, as: "resenado" }]
+                }
+            ]
+        });
+
+        if (!usuarioBD) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        const [resenas_recibidas, resenas_creadas] = await Promise.all([
-            Resena.findAll({
-                where: { resenado_id: id },
-                include: [
-                    {
-                        model: Usuario,
-                        as: "autor"
-                    }
-                ],
-                attributes: { exclude: ["autor_id", "resenado_id"] }
-            }),
-            Resena.findAll({
-                where: { autor_id: id },
-                include: [
-                    {
-                        model: Usuario,
-                        as: "resenado"
-                    }
-                ],
-                attributes: { exclude: ["autor_id", "resenado_id"] }
-            })
-        ]);
+        // Convertir la instancia de Sequelize a un objeto llano de JS
+        const usuarioPlain = usuarioBD.toJSON();
 
+        // Extraer las reseñas para que NO queden anidadas dentro de 'usuario'
+        const { resenas_recibidas = [], resenas_escritas: resenas_creadas = [], ...usuario } = usuarioPlain;
+
+        // Retornar en JSON con los objetos separados a nivel superior
         res.json({
             usuario,
             resenas_recibidas,
             resenas_creadas
         });
+
     } catch (error) {
         console.error("Error fetching perfil usuario:", error);
         res.status(500).json({ message: "Internal server error" });
