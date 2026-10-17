@@ -3,7 +3,9 @@ import { Resena } from "../models/Resena.js";
 
 export const getUsuarios = async (req, res) => {
     try {
-        const usuarios = await Usuario.findAll();
+        const usuarios = await Usuario.findAll({
+            attributes: { exclude: ["correo"] }
+        });
         if (!usuarios) {
             return res.status(404).json({ message: "Usuarios not found" });
         }
@@ -17,7 +19,9 @@ export const getUsuarios = async (req, res) => {
 export const getUsuarioById = async (req, res) => {
     const { id } = req.params;
     try {
-        const usuario = await Usuario.findByPk(id);
+        const usuario = await Usuario.findByPk(id, {
+            attributes: { exclude: ["correo"] }
+        });
         if (!usuario) {
             return res.status(404).json({ message: "Usuario not found" });
         }
@@ -32,16 +36,17 @@ export const getPerfilUsuario = async (req, res) => {
     const { id } = req.params;
     try {
         const usuarioBD = await Usuario.findByPk(id, {
+            attributes: { exclude: ["correo"] },
             include: [
                 {
                     model: Resena,
                     as: "resenas_recibidas",
-                    include: [{ model: Usuario, as: "autor" }]
+                    include: [{ model: Usuario, as: "autor", attributes: { exclude: ["correo"] } }]
                 },
                 {
                     model: Resena,
                     as: "resenas_escritas",
-                    include: [{ model: Usuario, as: "resenado" }]
+                    include: [{ model: Usuario, as: "resenado", attributes: { exclude: ["correo"] } }]
                 }
             ]
         });
@@ -55,6 +60,7 @@ export const getPerfilUsuario = async (req, res) => {
 
         // Extraer las reseñas para que NO queden anidadas dentro de 'usuario'
         const { resenas_recibidas = [], resenas_escritas: resenas_creadas = [], ...usuario } = usuarioPlain;
+
 
         // Retornar en JSON con los objetos separados a nivel superior
         res.json({
