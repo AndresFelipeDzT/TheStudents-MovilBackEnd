@@ -4,7 +4,7 @@ import { Resena } from "../models/Resena.js";
 export const getUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
-            attributes: { exclude: ["correo"] }
+            attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
         });
         if (!usuarios) {
             return res.status(404).json({ message: "Usuarios not found" });
@@ -20,7 +20,7 @@ export const getUsuarioById = async (req, res) => {
     const { id } = req.params;
     try {
         const usuario = await Usuario.findByPk(id, {
-            attributes: { exclude: ["correo"] }
+            attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
         });
         if (!usuario) {
             return res.status(404).json({ message: "Usuario not found" });
@@ -36,20 +36,23 @@ export const getPerfilUsuario = async (req, res) => {
     const { id } = req.params;
     try {
         const usuarioBD = await Usuario.findByPk(id, {
-            attributes: { exclude: ["correo"] },
+            attributes: { exclude: ["correo", "estado", "fecha_creacion"] },
             include: [
                 {
                     model: Resena,
                     as: "resenas_recibidas",
-                    include: [{ model: Usuario, as: "autor", attributes: { exclude: ["correo"] } }]
+                    attributes: { exclude: ["fecha_edicion", "estado"] },
+                    include: [{ model: Usuario, as: "autor", attributes: { exclude: ["correo", "estado", "fecha_creacion"] } }]
                 },
                 {
                     model: Resena,
                     as: "resenas_escritas",
-                    include: [{ model: Usuario, as: "resenado", attributes: { exclude: ["correo"] } }]
+                    attributes: { exclude: ["fecha_edicion", "estado"] },
+                    include: [{ model: Usuario, as: "resenado", attributes: { exclude: ["correo", "estado", "fecha_creacion"] } }]
                 }
             ]
         });
+
 
         if (!usuarioBD) {
             return res.status(404).json({ message: "Usuario no encontrado" });

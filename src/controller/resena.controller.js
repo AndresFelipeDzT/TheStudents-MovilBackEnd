@@ -7,14 +7,17 @@ export const getResenaById = async (req, res) => {
     const { id } = req.params;
     try {
         const resena = await Resena.findByPk(id, {
+            attributes: { exclude: ["fecha_edicion", "estado"] },
             include: [
                 {
                     model: Usuario,
-                    as: "autor"
+                    as: "autor",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 },
                 {
                     model: Usuario,
-                    as: "resenado"
+                    as: "resenado",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ]
         });
@@ -39,14 +42,16 @@ export const getResenasByResenadoId = async (req, res) => {
             include: [
                 {
                     model: Usuario,
-                    as: "autor"
+                    as: "autor",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 },
                 {
                     model: Usuario,
-                    as: "resenado"
+                    as: "resenado",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ],
-            attributes: { exclude: ["autor_id", "resenado_id"] }
+            attributes: { exclude: ["autor_id", "resenado_id", "fecha_edicion", "estado"] }
         });
         res.json(resenas);
     } catch (error) {
@@ -63,14 +68,16 @@ export const getResenasByAutorId = async (req, res) => {
             include: [
                 {
                     model: Usuario,
-                    as: "autor"
+                    as: "autor",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 },
                 {
                     model: Usuario,
-                    as: "resenado"
+                    as: "resenado",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ],
-            attributes: { exclude: ["autor_id", "resenado_id"] }
+            attributes: { exclude: ["autor_id", "resenado_id", "fecha_edicion", "estado"] }
         });
         res.json(resenas);
     } catch (error) {
@@ -90,15 +97,19 @@ export const getResenasExcludingUsuarioId = async (req, res) => {
             include: [
                 {
                     model: Usuario,
-                    as: "autor"
+                    as: "autor",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 },
                 {
                     model: Usuario,
-                    as: "resenado"
+                    as: "resenado",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ],
-            attributes: { exclude: ["autor_id", "resenado_id"] }
+            attributes: { exclude: ["autor_id", "resenado_id", "fecha_edicion", "estado"] }
         });
+
+
 
         res.json(resenas);
     } catch (error) {

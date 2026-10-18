@@ -8,9 +8,11 @@ export const getInscripcionById = async (req, res) => {
     const { id } = req.params;
     try {
         const inscripcion = await Inscripcion.findByPk(id, {
+            attributes: { exclude: ["usuario_id", "fecha_creacion"] },
             include: [
                 {
-                    association: "usuario"
+                    association: "usuario",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ]
         });
@@ -51,12 +53,16 @@ export const getCompanerosByUsuarioId = async (req, res) => {
                 usuario_id: { [Op.ne]: usuario_id },
                 [Op.or]: condicionesClasePeriodo
             },
+            attributes: { exclude: ["usuario_id", "fecha_creacion"] },
             include: [
                 {
-                    association: "usuario"
+                    association: "usuario",
+                    attributes: { exclude: ["correo", "estado", "fecha_creacion"] }
                 }
             ]
         });
+
+
 
         res.json(inscripcionesCompartidas);
     } catch (error) {
